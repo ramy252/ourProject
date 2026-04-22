@@ -1,0 +1,653 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Our Innovation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Barlow+Condensed:wght@300;400;500;600;700&display=swap");
+
+      :root {
+        --accent: #7ec8e3;
+        --accent-light: #b3e5f5;
+        --bg: #f0f8ff;
+        --bg2: #e1f0fa;
+        --card: #d6eaf8;
+        --text: #0d2137;
+        --muted: #4a7fa5;
+        --border: rgba(126, 200, 227, 0.3);
+        --border-h: rgba(126, 200, 227, 0.8);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        background: var(--bg);
+        font-family: "Barlow Condensed", sans-serif;
+        color: var(--text);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      .grain {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 9999;
+        opacity: 0.025;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        background-size: 128px;
+      }
+
+      .hero-line {
+        width: 100%;
+        max-width: 600px;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--accent),
+          transparent
+        );
+        margin: 0 auto;
+      }
+      .hero-title {
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(3rem, 8vw, 6rem);
+        font-weight: 700;
+        line-height: 0.9;
+        letter-spacing: 0.08em;
+        color: var(--text);
+      }
+      .hero-title span {
+        color: var(--accent);
+      }
+
+      .video-label {
+        font-size: 0.65rem;
+        letter-spacing: 0.4em;
+        color: var(--accent);
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .video-label::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+
+      .video-wrapper {
+        position: relative;
+        border-radius: 6px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        background: var(--bg2);
+      }
+      .main-video {
+        width: 100%;
+        height: 480px;
+        object-fit: cover;
+        display: block;
+      }
+      @media (max-width: 600px) {
+        .main-video {
+          height: 220px;
+        }
+      }
+
+      .play-btn {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(240, 248, 255, 0.55);
+        border: 2px solid var(--accent);
+        color: var(--accent);
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        font-size: 1.5rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+        backdrop-filter: blur(6px);
+      }
+      .play-btn:hover {
+        background: var(--accent);
+        color: #fff;
+        transform: translate(-50%, -50%) scale(1.1);
+      }
+      .play-icon {
+        margin-left: 5px;
+      }
+
+      .video-badge {
+        position: absolute;
+        bottom: 1rem;
+        right: 1rem;
+        font-size: 0.6rem;
+        letter-spacing: 0.3em;
+        color: var(--accent);
+        background: rgba(240, 248, 255, 0.75);
+        padding: 0.3rem 0.7rem;
+        border: 1px solid var(--border);
+        border-radius: 2px;
+        backdrop-filter: blur(4px);
+      }
+
+      .section-divider {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        margin-bottom: 2.5rem;
+      }
+      .section-divider::before,
+      .section-divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+      .divider-text {
+        font-size: 0.6rem;
+        letter-spacing: 0.45em;
+        color: var(--accent);
+      }
+
+      .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+      }
+      @media (max-width: 900px) {
+        .gallery-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+      @media (max-width: 580px) {
+        .gallery-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      .gallery-item {
+        display: flex;
+        flex-direction: column;
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(22px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .gallery-item:nth-child(1) {
+        animation: fadeUp 0.5s 0.05s both;
+      }
+      .gallery-item:nth-child(2) {
+        animation: fadeUp 0.5s 0.1s both;
+      }
+      .gallery-item:nth-child(3) {
+        animation: fadeUp 0.5s 0.15s both;
+      }
+      .gallery-item:nth-child(4) {
+        animation: fadeUp 0.5s 0.2s both;
+      }
+      .gallery-item:nth-child(5) {
+        animation: fadeUp 0.5s 0.25s both;
+      }
+      .gallery-item:nth-child(6) {
+        animation: fadeUp 0.5s 0.3s both;
+      }
+
+      .img-wrap {
+        position: relative;
+        overflow: hidden;
+        border-radius: 4px 4px 0 0;
+        border: 1px solid var(--border);
+        border-bottom: none;
+        aspect-ratio: 4/3;
+        background: var(--bg2);
+      }
+      .img-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.5s ease;
+      }
+      .gallery-item:hover .img-wrap img {
+        transform: scale(1.06);
+      }
+
+      .img-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(13, 33, 55, 0);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.3s;
+      }
+      .gallery-item:hover .img-overlay {
+        background: rgba(13, 33, 55, 0.35);
+      }
+
+      .open-btn {
+        background: transparent;
+        border: 1px solid var(--accent);
+        color: var(--accent);
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 0.7rem;
+        letter-spacing: 0.3em;
+        padding: 0.45rem 1.1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.25s;
+        border-radius: 2px;
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      .gallery-item:hover .open-btn {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .open-btn:hover {
+        background: var(--accent);
+        color: #fff;
+      }
+
+      .img-caption {
+        font-size: 0.65rem;
+        letter-spacing: 0.2em;
+        color: var(--muted);
+        text-transform: uppercase;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-top: 1px solid rgba(126, 200, 227, 0.1);
+        padding: 0.55rem 0.75rem;
+        border-radius: 0 0 4px 4px;
+        text-align: center;
+        transition:
+          color 0.2s,
+          border-color 0.2s;
+      }
+      .gallery-item:hover .img-caption {
+        color: var(--accent);
+        border-color: var(--border-h);
+      }
+
+      #lightboxContainer {
+        display: none;
+        position: fixed;
+        inset: 0;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+        background: rgba(13, 33, 55, 0.92);
+        z-index: 2000;
+        backdrop-filter: blur(8px);
+      }
+      #lightboxContent {
+        max-width: 1100px;
+        width: 100%;
+        max-height: 90vh;
+        overflow: auto;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+      }
+      #lightboxContent img,
+      #lightboxContent video {
+        width: 100%;
+        height: auto;
+        border-radius: 5px;
+        display: block;
+      }
+      #closeLightbox {
+        position: fixed;
+        right: 1.5rem;
+        top: 1.5rem;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        color: var(--accent);
+        border-radius: 50%;
+        width: 44px;
+        height: 44px;
+        font-size: 16px;
+        cursor: pointer;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 2100;
+        transition: all 0.2s;
+      }
+      #closeLightbox:hover {
+        background: var(--accent);
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="grain"></div>
+
+    <header class="text-center py-16 px-4">
+      <div class="hero-line mb-8"></div>
+      <h1 class="hero-title mb-3">OUR<br /><span>INNOVATION</span></h1>
+      <p
+        style="
+          font-size: 0.75rem;
+          letter-spacing: 0.35em;
+          color: var(--muted);
+          text-transform: uppercase;
+          margin-bottom: 2rem;
+        "
+      >
+        Crafted With Precision · Built To Endure
+      </p>
+      <div class="hero-line mt-4"></div>
+    </header>
+
+    <main style="max-width: 1200px; margin: 0 auto; padding: 0 1.5rem 5rem">
+      <!-- VIDEO — ضع ملف الفيديو في نفس الفولدر باسم 1.mp4 -->
+      <!-- الصورة 2.jpeg بتظهر كـ poster لحد ما يضغط play -->
+      <section style="margin-bottom: 3rem">
+        <div class="video-label">FEATURED PROJECT</div>
+        <div class="video-wrapper">
+          <video id="mainVideo" class="main-video" muted loop playsinline>
+            <source src="1.mp4" type="video/mp4" />
+          </video>
+          <button class="play-btn" id="playBtn">
+            <span class="play-icon">▶</span>
+          </button>
+          <div class="video-badge">01 / MAIN</div>
+        </div>
+      </section>
+
+      <div class="section-divider">
+        <span class="divider-text">GALLERY</span>
+      </div>
+
+      <!-- GALLERY: 2.jpeg → 7.jpeg -->
+      <section>
+        <div class="gallery-grid">
+          <div class="gallery-item" data-src="3.jpeg">
+            <div class="img-wrap">
+              <img src="3.jpeg" alt="Project 3" loading="lazy" />
+              <div class="img-overlay">
+                <button class="open-btn openThumbBtn">
+                  <span>OPEN</span>
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                    />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <p class="img-caption">Structural Progress</p>
+          </div>
+
+          <div class="gallery-item" data-src="8.jpeg">
+            <div class="img-wrap">
+              <img src="8.jpeg" alt="Project 8" loading="lazy" />
+              <div class="img-overlay">
+                <button class="open-btn openThumbBtn">
+                  <span>OPEN</span>
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                    />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <p class="img-caption">Foundation Work</p>
+          </div>
+          <div class="gallery-item" data-src="2.jpeg">
+            <div class="img-wrap">
+              <img src="2.jpeg" alt="Project 2" loading="lazy" />
+              <div class="img-overlay">
+                <button class="open-btn openThumbBtn">
+                  <span>OPEN</span>
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                    />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <p class="img-caption">Foundation Work</p>
+          </div>
+          <div class="gallery-item" data-src="1.jpeg">
+            <div class="img-wrap">
+              <img src="1.jpeg" alt="Project 2" loading="lazy" />
+              <div class="img-overlay">
+                <button class="open-btn openThumbBtn">
+                  <span>OPEN</span>
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                    />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <p class="img-caption">Foundation Work</p>
+          </div>
+
+          <div class="gallery-item" data-src="7.jpeg">
+            <div class="img-wrap">
+              <img src="7.jpeg" alt="Project 7" loading="lazy" />
+              <div class="img-overlay">
+                <button class="open-btn openThumbBtn">
+                  <span>OPEN</span>
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                    />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <p class="img-caption">3D Concept</p>
+          </div>
+
+          <div class="gallery-item" data-src="6.jpeg">
+            <div class="img-wrap">
+              <img src="6.jpeg" alt="Project 6" loading="lazy" />
+              <div class="img-overlay">
+                <button class="open-btn openThumbBtn">
+                  <span>OPEN</span>
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                    />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <p class="img-caption">Final Result</p>
+          </div>
+          <div class="gallery-item" data-src="5.jpeg">
+            <div class="img-wrap">
+              <img src="5.jpeg" alt="Project 5" loading="lazy" />
+              <div class="img-overlay">
+                <button class="open-btn openThumbBtn">
+                  <span>OPEN</span>
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                    />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <p class="img-caption">Water Fill</p>
+          </div>
+          <div class="gallery-item" data-src="4.jpeg">
+            <div class="img-wrap">
+              <img src="4.jpeg" alt="Project 4" loading="lazy" />
+              <div class="img-overlay">
+                <button class="open-btn openThumbBtn">
+                  <span>OPEN</span>
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                    />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <p class="img-caption">Pool Tiling</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="lightboxContainer">
+      <div id="lightboxContent"></div>
+    </div>
+    <button id="closeLightbox">✕</button>
+
+    <script>
+      const lb = document.getElementById("lightboxContainer");
+      const lbc = document.getElementById("lightboxContent");
+      const cls = document.getElementById("closeLightbox");
+
+      function openLB(type, src) {
+        lbc.innerHTML = "";
+        if (type === "video") {
+          const v = document.createElement("video");
+          v.src = src;
+          v.controls = true;
+          v.autoplay = true;
+          v.playsInline = true;
+          lbc.appendChild(v);
+        } else {
+          const img = document.createElement("img");
+          img.src = src;
+          lbc.appendChild(img);
+        }
+        lb.style.display = "flex";
+        cls.style.display = "flex";
+        document.body.style.overflow = "hidden";
+      }
+      function closeLB() {
+        lbc.innerHTML = "";
+        lb.style.display = "none";
+        cls.style.display = "none";
+        document.body.style.overflow = "";
+      }
+
+      document.querySelectorAll(".openThumbBtn").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          const item = e.target.closest(".gallery-item");
+          openLB("image", item.dataset.src);
+        });
+      });
+
+      document.getElementById("playBtn").addEventListener("click", () => {
+        openLB("video", "1.mp4");
+      });
+
+      cls.addEventListener("click", closeLB);
+      lb.addEventListener("click", (e) => {
+        if (e.target === lb) closeLB();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeLB();
+      });
+    </script>
+  </body>
+</html>
