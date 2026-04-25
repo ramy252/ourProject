@@ -3,28 +3,76 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <title>Our Innovation</title>
+    <title>Water Gradient</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Barlow+Condensed:wght@300;400;500;600;700&display=swap");
 
       :root {
-        --accent: #7ec8e3;
-        --accent-light: #b3e5f5;
-        --bg: #f0f8ff;
-        --bg2: #e1f0fa;
-        --card: #d6eaf8;
-        --text: #0d2137;
+        /* Dark Theme Variables (Default) */
+        --accent: #d4af37;
+        --accent-light: #f1d37e;
+        --bg: #0d1117;
+        --bg2: #161b22;
+        --card: #1c2128;
+        --text: #f0f6fc;
+        --muted: #8b949e;
+        --border: rgba(212, 175, 55, 0.2);
+        --border-h: rgba(212, 175, 55, 0.6);
+        --shadow: rgba(0, 0, 0, 0.5);
+      }
+
+      [data-theme="light"] {
+        /* Light Theme Variables (Azure Blue) */
+        --accent: #0077b6;
+        --accent-light: #48cae4;
+        --bg: #f8fbff;
+        --bg2: #edf2f7;
+        --card: #ffffff;
+        --text: #023e8a;
         --muted: #4a7fa5;
-        --border: rgba(126, 200, 227, 0.3);
-        --border-h: rgba(126, 200, 227, 0.8);
+        --border: rgba(0, 119, 182, 0.2);
+        --border-h: rgba(0, 119, 182, 0.5);
+        --shadow: rgba(0, 119, 182, 0.1);
       }
 
       * {
         box-sizing: border-box;
         margin: 0;
         padding: 0;
+        transition:
+          background-color 0.4s ease,
+          color 0.4s ease,
+          border-color 0.4s ease,
+          box-shadow 0.4s ease;
       }
+
+      /* Theme Toggle Button */
+      .theme-toggle {
+        position: fixed;
+        top: 2rem;
+        left: 2rem;
+        z-index: 3000;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        color: var(--accent);
+        padding: 0.6rem 1rem;
+        border-radius: 30px;
+        cursor: pointer;
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 0.7rem;
+        letter-spacing: 0.2em;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 15px var(--shadow);
+      }
+      .theme-toggle:hover {
+        border-color: var(--accent);
+        transform: translateY(-2px);
+      }
+
       html {
         scroll-behavior: smooth;
       }
@@ -41,9 +89,13 @@
         inset: 0;
         pointer-events: none;
         z-index: 9999;
-        opacity: 0.025;
+        opacity: 0.015;
         background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
         background-size: 128px;
+        filter: var(--grain-filter, none);
+      }
+      [data-theme="light"] .grain {
+        opacity: 0.04;
       }
 
       .hero-line {
@@ -57,51 +109,63 @@
           transparent
         );
         margin: 0 auto;
+        opacity: 0.4;
       }
       .hero-title {
         font-family: "Cormorant Garamond", serif;
         font-size: clamp(3rem, 8vw, 6rem);
         font-weight: 700;
         line-height: 0.9;
-        letter-spacing: 0.08em;
+        letter-spacing: 0.12em;
         color: var(--text);
+        text-shadow: 0 0 20px var(--shadow);
       }
       .hero-title span {
         color: var(--accent);
+        background: linear-gradient(135deg, var(--accent), var(--accent-light));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
       }
 
       .video-label {
         font-size: 0.65rem;
-        letter-spacing: 0.4em;
+        letter-spacing: 0.5em;
         color: var(--accent);
         margin-bottom: 0.75rem;
         display: flex;
         align-items: center;
         gap: 0.75rem;
+        opacity: 0.8;
       }
       .video-label::after {
         content: "";
         flex: 1;
         height: 1px;
-        background: var(--border);
+        background: linear-gradient(90deg, var(--border), transparent);
       }
 
       .video-wrapper {
         position: relative;
-        border-radius: 6px;
+        border-radius: 8px;
         overflow: hidden;
         border: 1px solid var(--border);
         background: var(--bg2);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
       }
       .main-video {
         width: 100%;
-        height: 480px;
+        height: 520px;
         object-fit: cover;
         display: block;
+        opacity: 0.9;
+        transition: opacity 0.5s;
+      }
+      .video-wrapper:hover .main-video {
+        opacity: 1;
       }
       @media (max-width: 600px) {
         .main-video {
-          height: 220px;
+          height: 280px;
         }
       }
 
@@ -110,24 +174,26 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background: rgba(240, 248, 255, 0.55);
-        border: 2px solid var(--accent);
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--accent);
         color: var(--accent);
-        width: 72px;
-        height: 72px;
+        width: 84px;
+        height: 84px;
         border-radius: 50%;
         font-size: 1.5rem;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.3s;
-        backdrop-filter: blur(6px);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 0 40px rgba(212, 175, 55, 0.1);
       }
       .play-btn:hover {
         background: var(--accent);
-        color: #fff;
+        color: var(--bg);
         transform: translate(-50%, -50%) scale(1.1);
+        box-shadow: 0 0 50px rgba(212, 175, 55, 0.3);
       }
       .play-icon {
         margin-left: 5px;
@@ -135,94 +201,115 @@
 
       .video-badge {
         position: absolute;
-        bottom: 1rem;
-        right: 1rem;
+        bottom: 1.5rem;
+        right: 1.5rem;
         font-size: 0.6rem;
-        letter-spacing: 0.3em;
+        letter-spacing: 0.4em;
         color: var(--accent);
-        background: rgba(240, 248, 255, 0.75);
-        padding: 0.3rem 0.7rem;
+        background: rgba(13, 17, 23, 0.8);
+        padding: 0.4rem 0.9rem;
         border: 1px solid var(--border);
-        border-radius: 2px;
-        backdrop-filter: blur(4px);
+        border-radius: 4px;
+        backdrop-filter: blur(8px);
+        font-weight: 500;
       }
 
       .section-divider {
         display: flex;
         align-items: center;
         gap: 1.5rem;
-        margin-bottom: 2.5rem;
+        margin-bottom: 3.5rem;
       }
       .section-divider::before,
       .section-divider::after {
         content: "";
         flex: 1;
         height: 1px;
-        background: var(--border);
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--border),
+          transparent
+        );
       }
       .divider-text {
-        font-size: 0.6rem;
-        letter-spacing: 0.45em;
+        font-size: 0.7rem;
+        letter-spacing: 0.5em;
         color: var(--accent);
+        font-weight: 500;
+        opacity: 0.8;
       }
 
       .gallery-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 1rem;
+        gap: 1.5rem;
       }
       @media (max-width: 900px) {
         .gallery-grid {
-          grid-template-columns: repeat(3, 1fr);
+          grid-template-columns: repeat(2, 1fr);
+          gap: 1rem;
         }
       }
       @media (max-width: 580px) {
         .gallery-grid {
-          grid-template-columns: repeat(2, 1fr);
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
         }
       }
 
       .gallery-item {
         display: flex;
         flex-direction: column;
+        position: relative;
+        background: var(--card);
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .gallery-item:hover {
+        transform: translateY(-8px);
+        border-color: var(--border-h);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
       }
 
       @keyframes fadeUp {
         from {
           opacity: 0;
-          transform: translateY(22px);
+          transform: translateY(30px);
         }
         to {
           opacity: 1;
           transform: translateY(0);
         }
       }
+      .gallery-item:nth-child(n) {
+        animation: fadeUp 0.7s ease-out both;
+      }
       .gallery-item:nth-child(1) {
-        animation: fadeUp 0.5s 0.05s both;
+        animation-delay: 0.1s;
       }
       .gallery-item:nth-child(2) {
-        animation: fadeUp 0.5s 0.1s both;
+        animation-delay: 0.2s;
       }
       .gallery-item:nth-child(3) {
-        animation: fadeUp 0.5s 0.15s both;
+        animation-delay: 0.3s;
       }
       .gallery-item:nth-child(4) {
-        animation: fadeUp 0.5s 0.2s both;
+        animation-delay: 0.4s;
       }
       .gallery-item:nth-child(5) {
-        animation: fadeUp 0.5s 0.25s both;
+        animation-delay: 0.5s;
       }
       .gallery-item:nth-child(6) {
-        animation: fadeUp 0.5s 0.3s both;
+        animation-delay: 0.6s;
       }
 
       .img-wrap {
         position: relative;
         overflow: hidden;
-        border-radius: 4px 4px 0 0;
-        border: 1px solid var(--border);
-        border-bottom: none;
-        aspect-ratio: 4/3;
+        aspect-ratio: 4/5;
         background: var(--bg2);
       }
       .img-wrap img {
@@ -230,69 +317,67 @@
         height: 100%;
         object-fit: cover;
         display: block;
-        transition: transform 0.5s ease;
+        transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        filter: grayscale(20%) brightness(0.9);
       }
       .gallery-item:hover .img-wrap img {
-        transform: scale(1.06);
+        transform: scale(1.1);
+        filter: grayscale(0%) brightness(1);
       }
 
       .img-overlay {
         position: absolute;
         inset: 0;
-        background: rgba(13, 33, 55, 0);
+        background: linear-gradient(
+          to top,
+          rgba(13, 17, 23, 0.8),
+          transparent 60%
+        );
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: background 0.3s;
+        transition: all 0.4s;
+        opacity: 0;
       }
       .gallery-item:hover .img-overlay {
-        background: rgba(13, 33, 55, 0.35);
+        opacity: 1;
       }
 
       .open-btn {
-        background: transparent;
+        background: rgba(255, 255, 255, 0.05);
         border: 1px solid var(--accent);
         color: var(--accent);
         font-family: "Barlow Condensed", sans-serif;
-        font-size: 0.7rem;
-        letter-spacing: 0.3em;
-        padding: 0.45rem 1.1rem;
+        font-size: 0.75rem;
+        letter-spacing: 0.4em;
+        padding: 0.7rem 1.4rem;
         cursor: pointer;
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        transition: all 0.25s;
-        border-radius: 2px;
-        opacity: 0;
-        transform: translateY(6px);
-      }
-      .gallery-item:hover .open-btn {
-        opacity: 1;
-        transform: translateY(0);
+        gap: 0.75rem;
+        transition: all 0.3s;
+        border-radius: 4px;
+        backdrop-filter: blur(8px);
       }
       .open-btn:hover {
         background: var(--accent);
-        color: #fff;
+        color: var(--bg);
       }
 
       .img-caption {
-        font-size: 0.65rem;
-        letter-spacing: 0.2em;
+        font-size: 0.75rem;
+        letter-spacing: 0.25em;
         color: var(--muted);
         text-transform: uppercase;
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-top: 1px solid rgba(126, 200, 227, 0.1);
-        padding: 0.55rem 0.75rem;
-        border-radius: 0 0 4px 4px;
+        padding: 1.25rem 1rem;
         text-align: center;
-        transition:
-          color 0.2s,
-          border-color 0.2s;
+        transition: all 0.3s;
+        font-weight: 500;
+        border-top: 1px solid var(--border);
       }
       .gallery-item:hover .img-caption {
         color: var(--accent);
-        border-color: var(--border-h);
+        background: rgba(212, 175, 55, 0.03);
       }
 
       #lightboxContainer {
@@ -302,298 +387,249 @@
         justify-content: center;
         align-items: center;
         padding: 2rem;
-        background: rgba(13, 33, 55, 0.92);
+        background: rgba(13, 17, 23, 0.95);
         z-index: 2000;
-        backdrop-filter: blur(8px);
+        backdrop-filter: blur(15px);
       }
       #lightboxContent {
-        max-width: 1100px;
+        max-width: 1000px;
         width: 100%;
-        max-height: 90vh;
-        overflow: auto;
+        max-height: 85vh;
+        overflow: hidden;
         border: 1px solid var(--border);
-        border-radius: 6px;
+        border-radius: 12px;
+        background: var(--bg2);
+        box-shadow: 0 0 100px rgba(0, 0, 0, 0.8);
+        transform: scale(0.95);
+        transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      #lightboxContainer.active #lightboxContent {
+        transform: scale(1);
       }
       #lightboxContent img,
       #lightboxContent video {
         width: 100%;
         height: auto;
-        border-radius: 5px;
         display: block;
       }
       #closeLightbox {
         position: fixed;
-        right: 1.5rem;
-        top: 1.5rem;
-        background: var(--bg2);
-        border: 1px solid var(--border);
+        right: 2rem;
+        top: 2rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--accent);
         color: var(--accent);
         border-radius: 50%;
-        width: 44px;
-        height: 44px;
-        font-size: 16px;
+        width: 54px;
+        height: 54px;
+        font-size: 20px;
         cursor: pointer;
         display: none;
         align-items: center;
         justify-content: center;
         z-index: 2100;
-        transition: all 0.2s;
+        transition: all 0.3s;
+        backdrop-filter: blur(10px);
       }
       #closeLightbox:hover {
         background: var(--accent);
-        color: #fff;
+        color: var(--bg);
+        transform: rotate(90deg);
+      }
+
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 4rem 1.5rem;
+        text-align: center;
+        background: var(--bg2);
+        margin-top: 5rem;
+      }
+      .footer-logo {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.5rem;
+        letter-spacing: 0.2em;
+        color: var(--accent);
+        margin-bottom: 1rem;
+      }
+      .footer-links {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-bottom: 2rem;
+        font-size: 0.7rem;
+        letter-spacing: 0.3em;
+        color: var(--muted);
+      }
+      .footer-copy {
+        font-size: 0.6rem;
+        letter-spacing: 0.2em;
+        color: var(--muted);
+        opacity: 0.6;
       }
     </style>
   </head>
-  <body>
+  <body data-theme="dark">
     <div class="grain"></div>
 
-    <header class="text-center py-16 px-4">
-      <div class="hero-line mb-8"></div>
-      <h1 class="hero-title mb-3">OUR<br /><span>INNOVATION</span></h1>
+    <button class="theme-toggle" id="themeToggle">
+      <span id="themeIcon">🌙</span>
+      <span id="themeText">DARK MODE</span>
+    </button>
+
+    <header class="text-center py-24 px-4">
+      <div class="hero-line mb-10"></div>
+      <h1 class="hero-title mb-4">WATER<br /><span>GRADIENT</span></h1>
       <p
         style="
-          font-size: 0.75rem;
-          letter-spacing: 0.35em;
+          font-size: 0.8rem;
+          letter-spacing: 0.5em;
           color: var(--muted);
           text-transform: uppercase;
-          margin-bottom: 2rem;
+          margin-bottom: 2.5rem;
         "
       >
         Crafted With Precision · Built To Endure
       </p>
-      <div class="hero-line mt-4"></div>
+      <div class="hero-line mt-6"></div>
     </header>
 
-    <main style="max-width: 1200px; margin: 0 auto; padding: 0 1.5rem 5rem">
-      <!-- VIDEO — ضع ملف الفيديو في نفس الفولدر باسم 1.mp4 -->
-      <!-- الصورة 2.jpeg بتظهر كـ poster لحد ما يضغط play -->
-      <section style="margin-bottom: 3rem">
+    <main style="max-width: 1200px; margin: 0 auto; padding: 0 1.5rem">
+      <section style="margin-bottom: 5rem">
         <div class="video-label">FEATURED PROJECT</div>
         <div class="video-wrapper">
-          <video id="mainVideo" class="main-video" muted loop playsinline>
+          <video
+            id="mainVideo"
+            class="main-video"
+            muted
+            loop
+            playsinline
+            poster="2.jpeg"
+          >
             <source src="1.mp4" type="video/mp4" />
           </video>
           <button class="play-btn" id="playBtn">
             <span class="play-icon">▶</span>
           </button>
-          <div class="video-badge">01 / MAIN</div>
+          <div class="video-badge">01 / FEATURED</div>
         </div>
       </section>
 
       <div class="section-divider">
-        <span class="divider-text">GALLERY</span>
+        <span class="divider-text">PROJECT GALLERY</span>
       </div>
 
-      <!-- GALLERY: 2.jpeg → 7.jpeg -->
       <section>
         <div class="gallery-grid">
-          <div class="gallery-item" data-src="3.jpeg">
+          <div class="gallery-item" data-src="4.jpeg">
             <div class="img-wrap">
-              <img src="3.jpeg" alt="Project 3" loading="lazy" />
+              <img src="4.jpeg" alt="Master Craftsmanship" loading="lazy" />
               <div class="img-overlay">
                 <button class="open-btn openThumbBtn">
-                  <span>OPEN</span>
-                  <svg
-                    width="13"
-                    height="13"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <path
-                      d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
-                    />
-                    <polyline points="15 3 21 3 21 9" />
-                    <line x1="10" y1="14" x2="21" y2="3" />
-                  </svg>
+                  <span>VIEW DETAILS</span>
+                </button>
+              </div>
+            </div>
+            <p class="img-caption">Master Craftsmanship</p>
+          </div>
+
+          <div class="gallery-item" data-src="3.jpeg">
+            <div class="img-wrap">
+              <img src="3.jpeg" alt="Structural Progress" loading="lazy" />
+              <div class="img-overlay">
+                <button class="open-btn openThumbBtn">
+                  <span>VIEW DETAILS</span>
                 </button>
               </div>
             </div>
             <p class="img-caption">Structural Progress</p>
           </div>
-
-          <div class="gallery-item" data-src="8.jpeg">
-            <div class="img-wrap">
-              <img src="8.jpeg" alt="Project 8" loading="lazy" />
-              <div class="img-overlay">
-                <button class="open-btn openThumbBtn">
-                  <span>OPEN</span>
-                  <svg
-                    width="13"
-                    height="13"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <path
-                      d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
-                    />
-                    <polyline points="15 3 21 3 21 9" />
-                    <line x1="10" y1="14" x2="21" y2="3" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-            <p class="img-caption">Foundation Work</p>
-          </div>
           <div class="gallery-item" data-src="2.jpeg">
             <div class="img-wrap">
-              <img src="2.jpeg" alt="Project 2" loading="lazy" />
+              <img src="2.jpeg" alt="Initial Concept" loading="lazy" />
               <div class="img-overlay">
                 <button class="open-btn openThumbBtn">
-                  <span>OPEN</span>
-                  <svg
-                    width="13"
-                    height="13"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <path
-                      d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
-                    />
-                    <polyline points="15 3 21 3 21 9" />
-                    <line x1="10" y1="14" x2="21" y2="3" />
-                  </svg>
+                  <span>VIEW DETAILS</span>
                 </button>
               </div>
             </div>
-            <p class="img-caption">Foundation Work</p>
+            <p class="img-caption">Initial Concept</p>
           </div>
+
           <div class="gallery-item" data-src="1.jpeg">
             <div class="img-wrap">
-              <img src="1.jpeg" alt="Project 2" loading="lazy" />
+              <img src="1.jpeg" alt="Precision Engineering" loading="lazy" />
               <div class="img-overlay">
                 <button class="open-btn openThumbBtn">
-                  <span>OPEN</span>
-                  <svg
-                    width="13"
-                    height="13"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <path
-                      d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
-                    />
-                    <polyline points="15 3 21 3 21 9" />
-                    <line x1="10" y1="14" x2="21" y2="3" />
-                  </svg>
+                  <span>VIEW DETAILS</span>
                 </button>
               </div>
             </div>
-            <p class="img-caption">Foundation Work</p>
+            <p class="img-caption">Precision Engineering</p>
+          </div>
+          <div class="gallery-item" data-src="8.jpeg">
+            <div class="img-wrap">
+              <img src="8.jpeg" alt="Foundation Work" loading="lazy" />
+              <div class="img-overlay">
+                <button class="open-btn openThumbBtn">
+                  <span>VIEW DETAILS</span>
+                </button>
+              </div>
+            </div>
+            <p class="img-caption">Foundation Design</p>
           </div>
 
           <div class="gallery-item" data-src="7.jpeg">
             <div class="img-wrap">
-              <img src="7.jpeg" alt="Project 7" loading="lazy" />
+              <img src="7.jpeg" alt="Aesthetic Integration" loading="lazy" />
               <div class="img-overlay">
                 <button class="open-btn openThumbBtn">
-                  <span>OPEN</span>
-                  <svg
-                    width="13"
-                    height="13"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <path
-                      d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
-                    />
-                    <polyline points="15 3 21 3 21 9" />
-                    <line x1="10" y1="14" x2="21" y2="3" />
-                  </svg>
+                  <span>VIEW DETAILS</span>
                 </button>
               </div>
             </div>
-            <p class="img-caption">3D Concept</p>
+            <p class="img-caption">Aesthetic Integration</p>
           </div>
 
           <div class="gallery-item" data-src="6.jpeg">
             <div class="img-wrap">
-              <img src="6.jpeg" alt="Project 6" loading="lazy" />
+              <img src="6.jpeg" alt="Final Delivery" loading="lazy" />
               <div class="img-overlay">
                 <button class="open-btn openThumbBtn">
-                  <span>OPEN</span>
-                  <svg
-                    width="13"
-                    height="13"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <path
-                      d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
-                    />
-                    <polyline points="15 3 21 3 21 9" />
-                    <line x1="10" y1="14" x2="21" y2="3" />
-                  </svg>
+                  <span>VIEW DETAILS</span>
                 </button>
               </div>
             </div>
-            <p class="img-caption">Final Result</p>
+            <p class="img-caption">Final Delivery</p>
           </div>
+
           <div class="gallery-item" data-src="5.jpeg">
             <div class="img-wrap">
-              <img src="5.jpeg" alt="Project 5" loading="lazy" />
+              <img src="5.jpeg" alt="System Testing" loading="lazy" />
               <div class="img-overlay">
                 <button class="open-btn openThumbBtn">
-                  <span>OPEN</span>
-                  <svg
-                    width="13"
-                    height="13"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <path
-                      d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
-                    />
-                    <polyline points="15 3 21 3 21 9" />
-                    <line x1="10" y1="14" x2="21" y2="3" />
-                  </svg>
+                  <span>VIEW DETAILS</span>
                 </button>
               </div>
             </div>
-            <p class="img-caption">Water Fill</p>
-          </div>
-          <div class="gallery-item" data-src="4.jpeg">
-            <div class="img-wrap">
-              <img src="4.jpeg" alt="Project 4" loading="lazy" />
-              <div class="img-overlay">
-                <button class="open-btn openThumbBtn">
-                  <span>OPEN</span>
-                  <svg
-                    width="13"
-                    height="13"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <path
-                      d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
-                    />
-                    <polyline points="15 3 21 3 21 9" />
-                    <line x1="10" y1="14" x2="21" y2="3" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-            <p class="img-caption">Pool Tiling</p>
+            <p class="img-caption">System Testing</p>
           </div>
         </div>
       </section>
     </main>
+
+    <footer>
+      <div class="footer-logo">Water Gradient</div>
+      <div class="footer-links">
+        <span>EST. 2026</span>
+        <span>·</span>
+        <span>QUALITY ASSURED</span>
+        <span>·</span>
+        <span>GLOBAL REACH</span>
+      </div>
+      <p class="footer-copy">
+        &copy; 2026 INNOVATION ARCHIVES. ALL RIGHTS RESERVED.
+      </p>
+    </footer>
 
     <div id="lightboxContainer">
       <div id="lightboxContent"></div>
@@ -601,6 +637,20 @@
     <button id="closeLightbox">✕</button>
 
     <script>
+      const body = document.body;
+      const themeToggle = document.getElementById("themeToggle");
+      const themeIcon = document.getElementById("themeIcon");
+      const themeText = document.getElementById("themeText");
+
+      themeToggle.addEventListener("click", () => {
+        const isDark = body.getAttribute("data-theme") === "dark";
+        const nextTheme = isDark ? "light" : "dark";
+        body.setAttribute("data-theme", nextTheme);
+
+        themeIcon.innerText = isDark ? "☀️" : "🌙";
+        themeText.innerText = isDark ? "LIGHT MODE" : "DARK MODE";
+      });
+
       const lb = document.getElementById("lightboxContainer");
       const lbc = document.getElementById("lightboxContent");
       const cls = document.getElementById("closeLightbox");
@@ -622,12 +672,18 @@
         lb.style.display = "flex";
         cls.style.display = "flex";
         document.body.style.overflow = "hidden";
+        setTimeout(() => {
+          lb.classList.add("active");
+        }, 10);
       }
       function closeLB() {
-        lbc.innerHTML = "";
-        lb.style.display = "none";
-        cls.style.display = "none";
-        document.body.style.overflow = "";
+        lb.classList.remove("active");
+        setTimeout(() => {
+          lbc.innerHTML = "";
+          lb.style.display = "none";
+          cls.style.display = "none";
+          document.body.style.overflow = "";
+        }, 300);
       }
 
       document.querySelectorAll(".openThumbBtn").forEach((btn) => {
